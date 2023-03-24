@@ -1,4 +1,6 @@
 <template>
+    <NavBar title="登录" left-text="返回" left-arrow @click-left="onClickLeft" />
+
     <div class="login">
         <div class="avatar">
             <avatar theme="outline" size="75" fill="#333" />
@@ -16,7 +18,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { Field, Form, Button } from 'vant';
+import { Field, Form, Button, NavBar } from 'vant';
 import { Avatar } from '@icon-park/vue-next'
 
 
@@ -31,6 +33,8 @@ const rules = {
     username: [{ required: true, message: "请输入用户名" }],
     password: [{ required: true, message: "请输入密码" }],
 };
+
+const onClickLeft = () => history.back();
 
 const handleSubmit = () => {
     isSubmitting.value = true;
@@ -61,6 +65,8 @@ const handleSubmit = () => {
 
 <style lang="scss" scoped>
 .login {
+    margin-top: 100px;
+
     .avatar {
         width: 100%;
         text-align: center;

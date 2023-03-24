@@ -2,7 +2,8 @@
 </script>
 
 <template>
-  <router-view></router-view>
+  <RouterView />
+  <router-view name="child"></router-view>
 </template>
 
 <style scoped>
