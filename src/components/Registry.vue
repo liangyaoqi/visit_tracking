@@ -19,7 +19,7 @@
 
 <script setup>
 import {reactive, ref} from 'vue';
-import {Field, Form, Button, NavBar, Toast, Dialog, showDialog, showToast} from 'vant';
+import {Field, Form, Button, NavBar,  Dialog, showDialog, showToast} from 'vant';
 import {AddUser} from '@icon-park/vue-next'
 import {registry} from '../request/operator'
 import {useRouter} from 'vue-router'
@@ -62,7 +62,6 @@ async function handleSubmit() {
     });
   }
   isSubmitting.value = false
-  console.log(form);
 };
 </script>
 
