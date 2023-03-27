@@ -18,9 +18,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { Field, Form, Button, NavBar } from 'vant';
+import { Field, Form, Button, NavBar,showToast } from 'vant';
 import { Avatar } from '@icon-park/vue-next'
 import { login } from '../request/operator';
+import { useRouter } from 'vue-router';
+import {useStore} from 'vuex'
 
 
 const form = reactive({
@@ -37,17 +39,22 @@ const rules = {
 
 const onClickLeft = () => history.back();
 
+const router = useRouter();
+
+const store = useStore();
+
 const handleSubmit = async () => {
     isSubmitting.value = true;
     // 这里可以添加登录逻辑
     const result = await login(form)
     if (result) {
-
+        store.commit('saveUser')
         isSubmitting.value = false;
-        if (result.success) {
-            showToast(result.message);
-            localStorage.setItem("token", result.data.token);
-            // 注册成功，跳转到首页
+        if (result.code===200) {
+            showToast("登陆成功");
+            store.commit('saveUser')
+            localStorage.setItem("token", result.data);
+            // 登陆成功，跳转到首页
             await router.push("/");
         } else {
             await showDialog({
@@ -56,7 +63,6 @@ const handleSubmit = async () => {
         }
     }
     isSubmitting.value = false
-    console.log(form.username);
 };
 </script>
 

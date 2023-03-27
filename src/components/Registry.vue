@@ -49,7 +49,7 @@ async function handleSubmit() {
     if (result.success) {
       showToast(result.message);
       // 注册成功，跳转到首页
-      await router.push("/");
+      await router.push("/login");
     } else {
       await showDialog({
         message: result.message

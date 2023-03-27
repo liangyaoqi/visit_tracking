@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { getOperator } from "../request/operator";
 
 // 创建一个新的 store 实例
 const store = createStore({
@@ -11,8 +12,15 @@ const store = createStore({
     increment(state) {
       state.count++;
     },
-    saveUser(state, user) {
-      state.user = user;
+    async saveUser(state) {
+      const result = await getOperator();
+      console.log(result);
+      state.user = result.data;
+    },
+  },
+  actions: {
+    increment(context) {
+      context.commit("increment");
     },
   },
 });
