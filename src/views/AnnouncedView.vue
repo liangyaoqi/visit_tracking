@@ -21,8 +21,7 @@ import { Field, Form, Button, CellGroup, NavBar, Dialog, showDialog, showToast }
 import { reactive } from 'vue'
 
 const form = reactive({
-    username: "",
-    password: "",
+    content: ""
 });
 
 const onClickLeft = () => history.back();
