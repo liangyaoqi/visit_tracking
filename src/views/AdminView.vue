@@ -1,5 +1,7 @@
 <template>
     <div class="admin">
+        <NavBar title="管理员主页" left-text="返回" left-arrow @click-left="onClickLeft" />
+
         <!-- 列表 -->
         <ul class="admin-list">
             <li>
@@ -21,7 +23,9 @@
 
 <script lang="ts" setup>
 import { MoreApp, Announcement } from '@icon-park/vue-next';
+import { NavBar } from 'vant';
 
+const onClickLeft = () => history.back();
 </script>
 
 <style lang="scss" scoped>

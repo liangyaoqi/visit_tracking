@@ -8,7 +8,7 @@
         <Form :model="form" :rules="rules">
             <Field v-model="form.username" label="用户名" placeholder="请输入用户名" clearable required autofocus />
             <Field v-model="form.password" label="密码" type="password" placeholder="请输入密码" clearable required />
-
+            <RouterLink to="/registry" class="register-link">没有账号？点我去注册</RouterLink>
             <div class="login-btn">
                 <Button type="primary" block :loading="isSubmitting" @click="handleSubmit">登录</Button>
             </div>
@@ -20,6 +20,7 @@
 import { reactive, ref } from 'vue';
 import { Field, Form, Button, NavBar } from 'vant';
 import { Avatar } from '@icon-park/vue-next'
+import { login } from '../request/operator';
 
 
 const form = reactive({
@@ -36,28 +37,24 @@ const rules = {
 
 const onClickLeft = () => history.back();
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
     isSubmitting.value = true;
     // 这里可以添加登录逻辑
-    /* login(form)
-        .then(res => {
-            isSubmitting.value = false;
-            if (res.code === 200) {
-                Toast.success(res.msg);
-                // 登录成功，跳转到首页
-                this.$router.push("/");
-            } else {
-                Dialog.alert({
-                    message: res.msg
-                });
-            }
-        })
-        .catch(() => {
-            isSubmitting.value = false;
-            Dialog.alert({
-                message: "系统错误，请稍后重试！"
+    const result = await login(form)
+    if (result) {
+
+        isSubmitting.value = false;
+        if (result.success) {
+            showToast(result.message);
+            localStorage.setItem("token", result.data.token);
+            // 注册成功，跳转到首页
+            await router.push("/");
+        } else {
+            await showDialog({
+                message: result.message
             });
-        }); */
+        }
+    }
     isSubmitting.value = false
     console.log(form.username);
 };
@@ -66,6 +63,14 @@ const handleSubmit = () => {
 <style lang="scss" scoped>
 .login {
     margin-top: 100px;
+
+    .register-link {
+        display: block;
+        text-align: left;
+        margin-top: 20px;
+        margin-left: 10px;
+        color: black;
+    }
 
     .avatar {
         width: 100%;
