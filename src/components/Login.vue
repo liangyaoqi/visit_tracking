@@ -18,11 +18,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { Field, Form, Button, NavBar,showToast } from 'vant';
+import { Field, Form, Button, NavBar, showToast } from 'vant';
 import { Avatar } from '@icon-park/vue-next'
 import { login } from '../request/operator';
 import { useRouter } from 'vue-router';
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
 
 
 const form = reactive({
@@ -50,8 +50,9 @@ const handleSubmit = async () => {
     if (result) {
         store.commit('saveUser')
         isSubmitting.value = false;
-        if (result.code===200) {
+        if (result.code === 200) {
             showToast("登陆成功");
+            // 将用户信息保存到vuex
             store.commit('saveUser')
             localStorage.setItem("token", result.data);
             // 登陆成功，跳转到首页

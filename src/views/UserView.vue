@@ -3,22 +3,22 @@
         <NavBar title="操作员主页" left-text="返回" left-arrow @click-left="onClickLeft" />
 
         <ul class="user-list">
-            <li>
-                <router-link to="/manage">
+            <li class="list-item">
+                <router-link to="/rigistered">
                     <inspection theme="outline" size="100" fill="#333" />
                     <p class="front"> 访客登记</p>
                 </router-link>
 
             </li>
-            <li>
-                <router-link to="/manage">
+            <li class="list-item">
+                <router-link to="/search">
                     <people-search-one theme="outline" size="100" fill="#333" />
                     <p class="front"> 来访检索</p>
                 </router-link>
 
             </li>
-            <li>
-                <router-link to="/manage">
+            <li class="list-item">
+                <router-link to="/blacklist">
                     <forbid theme="outline" size="100" fill="#333" />
                     <p class="front"> 黑名单</p>
                 </router-link>
@@ -38,13 +38,18 @@ const onClickLeft = () => history.back();
 <style lang="scss" scoped>
 .user {
     .user-list {
+        margin-top: 10vh;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: row;
-        height: 100vh;
         justify-content: space-around;
         flex-wrap: wrap;
+
+        .list-item {
+            text-align: center;
+            width: 20vh;
+        }
     }
 
     .front {

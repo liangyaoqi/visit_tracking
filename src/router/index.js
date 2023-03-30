@@ -35,6 +35,18 @@ const routes = [
     path: "/announced",
     component: AnnouncedView,
   },
+  {
+    path: "/blacklist",
+    component: () => import("../views/Blacklist.vue"),
+  },
+  {
+    path: "/rigistered",
+    component: () => import("../views/VisitorRegister.vue"),
+  },
+  {
+    path: "/search",
+    component: () => import("../views/VisitorSearch.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -53,7 +65,7 @@ router.beforeEach((to, from, next) => {
     next("/login");
   } else {
     // 否则继续执行路由
-    if (to.path == "/admin" && !isAdmin.value === "1") {
+    if (to.path == "/admin" && isAdmin.value == 0) {
       showToast("您没有管理员权限");
       next("/home");
     } else {
