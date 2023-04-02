@@ -14,26 +14,41 @@
             <p class="front"> 访客登记</p>
         </div>
         <!-- 弹出层 -->
-        <Overlay :show="show" @click="show = false">
+        <Overlay :show="show">
             <div class="prop-form">
                 <van-form @submit="onSubmit">
                     <CellGroup inset>
                         <van-field v-model="form.name" name="姓名" label="姓名" placeholder="姓名"
                             :rules="[{ required: true, message: '请填写姓名' }]" />
-                        <van-field v-model="form.idCar" type="text" name="身份证号码" label="身份证号码" placeholder="身份证号码"
+                        <van-field v-model="form.idcard" type="text" name="身份证号码" label="身份证号码" placeholder="身份证号码"
                             :rules="[{ required: true, message: '请填写身份证号码' }]" />
                         <van-field v-model="form.temperature" type="text" name="体温" label="体温" placeholder="体温"
                             :rules="[{ required: true, message: '请填写体温' }]" />
-                        <van-field v-model="form.vehicleNumber" type="text" name="车牌号" label="车牌号" placeholder="车牌号"
+                        <van-field v-model="form.vehicleid" type="text" name="车牌号" label="车牌号" placeholder="车牌号"
                             :rules="[{ required: false, message: '请填写车牌号' }]" />
-                        <van-field v-model="form.visitUnit" type="text" name="访客单位" label="访客单位" placeholder="访客单位"
+                        <van-field v-model="form.companyname" type="text" name="访客单位" label="访客单位" placeholder="访客单位"
                             :rules="[{ required: true, message: '请填写访客单位' }]" />
-                        <van-field v-model="form.visitReason" type="text" name="来访事由" label="来访事由" placeholder="来访事由"
+                        <van-field v-model="form.reason" type="text" name="来访事由" label="来访事由" placeholder="来访事由"
                             :rules="[{ required: true, message: '请填写来访事由' }]" />
+                        <Checkbox v-model="form.isepidemicarea" icon-size="20px" class="checkbox">是否来自疫区</Checkbox>
+                        <Divider :style="{ padding: '0 16px' }"></Divider>
+                        <div class="select-wrapper">
+                            <label for="select-box">
+                                <Icon name="location-o" />入口
+                            </label>
+                            <select id="select-box" v-model="form.enter" class="select">
+                                <option v-for="(option, index) in enters" :key="index" :value="option">{{ option }}
+                                </option>
+                            </select>
+                        </div>
+
                     </CellGroup>
                     <div style="margin: 16px;">
                         <van-button round block type="primary" native-type="submit">
                             提交
+                        </van-button>
+                        <van-button round block type="default" class="cancel-btn" @click="show = false">
+                            取消
                         </van-button>
                     </div>
                 </van-form>
@@ -43,7 +58,7 @@
 </template>
 
 <script setup>
-import { NavBar, NoticeBar, Overlay, Form, showToast, Field, CellGroup, Button } from 'vant';
+import { NavBar, NoticeBar, Overlay, Checkbox, showToast, CellGroup, Icon, Divider, showFailToast, showSuccessToast } from 'vant';
 import { Edit } from '@icon-park/vue-next';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -54,22 +69,46 @@ import {
     GridComponent
 } from 'echarts/components';
 import VChart from 'vue-echarts';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { addVisitor } from '../request/visitor';
+import { getBlacklist } from '../request/blacklist';
 
 const total = ref(0);
 const show = ref(false);
 const form = reactive({
     name: "",
-    idCar: "",
+    idcard: "",
     temperature: "",
-    vehicleNumber: "",
-    visitUnit: "",
-    visitReason: ""
+    vehicleid: "",
+    companyname: "",
+    reason: "",
+    isepidemicarea: false,
+    enter: "A"
 });
 
-const onSubmit = () => {
-    if (form.name == "" || form.idCar == "" || form.temperature == "" || form.visitUnit == "" || form.visitReason == "") {
-        showToast({
+// 初始化获取数据
+onMounted(() => {
+    // 获取数据
+    // axios.get('/api/visitor/total').then(res => {
+    //     total.value = res.data;
+    // })
+    // axios.get('/api/visitor/flow').then(res => {
+    //     option.value.xAxis.data = res.data.time;
+    //     option.value.series[0].data = res.data.flow;
+    // })
+    console.log('mounted');
+})
+
+const enters = ref([
+    'A',
+    'B',
+    'C',
+    'D',
+])
+
+const onSubmit = async () => {
+    if (form.name == "" || form.idcard == "" || form.temperature == "" || form.companyname == "" || form.reason == "") {
+        showFailToast({
             message: '请填写完整信息',
             duration: 2000,
             forbidClick: true,
@@ -77,19 +116,40 @@ const onSubmit = () => {
         return;
     } else {
         if (form.temperature > 37.3) {
-            showToast({
+            showFailToast({
                 message: '体温异常',
                 duration: 2000,
                 forbidClick: true,
             });
             return;
-        } else if (form.name)
-            showToast({
-                message: '登记成功',
-                duration: 2000,
-                forbidClick: true,
-            });
-        show.value = false;
+        } else if (form.name) {
+            form.isepidemicarea ? form.isepidemicarea = 1 : form.isepidemicarea = 0;
+            const result = await addVisitor(form);
+            if (result.success) {
+                //查看是否是黑名单中的人
+                const result = await getBlacklist(form.idcard);
+                if (result.data) {
+                    showFailToast({
+                        message: '黑名单中的人员',
+                        duration: 2000,
+                        forbidClick: true,
+                    });
+                    return;
+                }
+                showSuccessToast({
+                    message: '登记成功',
+                    duration: 2000,
+                    forbidClick: true,
+                });
+            } else {
+                showFailToast({
+                    message: '登记失败',
+                    duration: 2000,
+                    forbidClick: true,
+                });
+            }
+            show.value = false;
+        }
     }
     total.value += 1;
     show.value = false;
@@ -128,6 +188,8 @@ const option = ref({
 
 
 const onClickLeft = () => history.back();
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -175,6 +237,30 @@ const onClickLeft = () => history.back();
         align-items: center;
         justify-content: center;
         height: 100%;
+
+        .checkbox {
+            padding-left: 20px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .select-wrapper {
+            margin-left: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+
+            .select {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-left: 10px;
+            }
+        }
+
+
+        .cancel-btn {
+            margin-top: 10px;
+        }
     }
 }
 </style>

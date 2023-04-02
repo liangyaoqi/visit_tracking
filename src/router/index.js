@@ -15,8 +15,20 @@ import { computed } from "vue";
 import { showToast } from "vant";
 
 const routes = [
-  { path: "/", redirect: "/home" },
-  { path: "/home", component: HomeView },
+  {
+    path: "/",
+    redirect: "/home",
+    meta: {
+      requiresAuth: true, //设置需要授权的页面
+    },
+  },
+  {
+    path: "/home",
+    component: HomeView,
+    meta: {
+      requiresAuth: true, //设置需要授权的页面
+    },
+  },
   {
     path: "/admin",
     component: AdminView,
@@ -24,7 +36,13 @@ const routes = [
       requiresAuth: true, //设置需要授权的页面
     },
   },
-  { path: "/user", component: UserView },
+  {
+    path: "/user",
+    component: UserView,
+    meta: {
+      requiresAuth: true, //设置需要授权的页面
+    },
+  },
   { path: "/login", component: Login },
   { path: "/registry", component: Registry },
   {
@@ -59,15 +77,18 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isLoggedIn = localStorage.getItem("token"); //此处使用 localStorage 存储 token
   const isAdmin = computed(() => store.state.user.isadmin);
-  console.log(isAdmin.value);
   if (requiresAuth && !isLoggedIn) {
     // 如果未登录且页面需要授权，则跳转到登录页面
     next("/login");
   } else {
     // 否则继续执行路由
-    if (to.path == "/admin" && isAdmin.value == 0) {
-      showToast("您没有管理员权限");
-      next("/home");
+    if (to.path == "/admin") {
+      if (!isAdmin.value || isAdmin?.value == 0) {
+        showToast("您没有管理员权限");
+        next("/home");
+      } else {
+        next();
+      }
     } else {
       next();
     }

@@ -18,7 +18,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { Field, Form, Button, NavBar, showToast } from 'vant';
+import { Field, Form, Button, NavBar, showToast, showDialog } from 'vant';
 import { Avatar } from '@icon-park/vue-next'
 import { login } from '../request/operator';
 import { useRouter } from 'vue-router';
@@ -59,7 +59,7 @@ const handleSubmit = async () => {
             await router.push("/");
         } else {
             await showDialog({
-                message: result.message
+                message: '账号或密码错误'
             });
         }
     }

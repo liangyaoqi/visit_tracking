@@ -17,6 +17,9 @@ const store = createStore({
       console.log(result);
       state.user = result.data;
     },
+    clearUser(state) {
+      state.user = {};
+    },
   },
   actions: {
     increment(context) {

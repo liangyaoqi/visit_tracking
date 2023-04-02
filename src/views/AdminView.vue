@@ -16,13 +16,20 @@
                     <p class="front"> 发布公告</p>
                 </router-link>
             </li>
+            <li class="list-item">
+                <router-link to="/blacklist">
+                    <forbid theme="outline" size="100" fill="#333" />
+                    <p class="front"> 黑名单</p>
+                </router-link>
+
+            </li>
         </ul>
 
     </div>
 </template>
 
 <script lang="ts" setup>
-import { MoreApp, Announcement } from '@icon-park/vue-next';
+import { MoreApp, Announcement ,Forbid} from '@icon-park/vue-next';
 import { NavBar } from 'vant';
 
 const onClickLeft = () => history.back();
