@@ -121,7 +121,7 @@ const onConfirm = ({ selectedOptions }) => {
     color: #908c8c;
 
     .list-content {
-        .line-one {}
+        // .line-one {}
 
         .line-two {
             display: flex;
