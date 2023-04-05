@@ -10,6 +10,7 @@ import Login from "../components/Login.vue";
 import Registry from "../components/Registry.vue";
 import ManageOperator from "../views/ManageOperator.vue";
 import AnnouncedView from "../views/AnnouncedView.vue";
+import BlackList from "../views/Blacklist.vue";
 import store from "../vuex";
 import { computed } from "vue";
 import { showToast } from "vant";
@@ -55,7 +56,7 @@ const routes = [
   },
   {
     path: "/blacklist",
-    component: () => import("../views/Blacklist.vue"),
+    component: () => import("../views/BlackList.vue"),
   },
   {
     path: "/rigistered",

@@ -2,9 +2,10 @@ import request from "../utils/axios";
 
 const getVisitorRecord = () => request.get("/api/visitor/record");
 
-const getVisitorByName = (name) =>
-  request.get("/api/visitor", { params: { name: name } });
+const getVisitorByName = (data) => request.post("/api/visitor/visitors", data);
 
 const addVisitor = (data) => request.post("/api/visitor/add", data);
 
-export { getVisitorByName, addVisitor };
+const todayVisitor = () => request.get("/api/visitor/total");
+
+export { getVisitorByName, addVisitor, todayVisitor };

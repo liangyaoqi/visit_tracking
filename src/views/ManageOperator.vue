@@ -26,12 +26,13 @@
             <div class="pop-form">
                 <van-form @submit="onSubmit">
                     <CellGroup inset>
-                        <van-field v-model="popItem.operatorid" style="display: none;" />
-                        <van-field v-model="popItem.name" name="姓名" label="姓名" placeholder="姓名" />
-                        <van-field v-model="popItem.isadmin" type="text" name="是否为管理员" label="是否为管理员"
+                        <van-field v-model="popItem.operatorid" name="operatorid" style="display: none;" />
+                        <van-field v-model="popItem.name" name="name" label="姓名" placeholder="姓名" />
+                        <van-field v-model="popItem.isadmin" type="text" name="isadmin" label="是否为管理员"
                             placeholder="是否为管理员" />
-                        <van-field v-model="popItem.email" type="text" name="邮箱" label="邮箱" placeholder="邮箱" />
-                        <van-field v-model="popItem.phonenumber" type="text" name="手机号码" label="手机号码" placeholder="手机号码" />
+                        <van-field v-model="popItem.email" type="text" name="email" label="邮箱" placeholder="邮箱" />
+                        <van-field v-model="popItem.phonenumber" type="text" name="phonenumber" label="手机号码"
+                            placeholder="手机号码" />
 
 
                     </CellGroup>
@@ -52,7 +53,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { NavBar, Divider, CellGroup, showConfirmDialog, Overlay } from 'vant';
-import { listOprator } from '../request/operator';
+import { listOprator, deleteOperator, updateOperator } from '../request/operator';
 
 const onClickLeft = () => history.back();
 
@@ -60,10 +61,10 @@ const list = ref([]);
 
 const popItem = ref({})
 
+
 onMounted(async () => {
     const result = await listOprator();
     if (result.success) {
-        console.log(result.data);
         list.value = result.data;
     }
 })
@@ -73,14 +74,26 @@ const showPopup = () => {
     show.value = true;
 };
 
-const handleClick = (item) => {
+const handleClick = async (item) => {
     popItem.value = item;
     showPopup();
+
+
 }
 
-const onSubmit = (values) => {
-    //获取到id根据id更新管理员
-    console.log(popItem.value.operatorid);
+const onSubmit = async (values) => {
+    // if (JSON.stringify(popItem.value) !== JSON.stringify(item)) {
+    // 内容有修改，更新
+    console.log(values);
+    await updateOperator(popItem.value);
+    list.value = list.value.map((x) => {
+        if (x.operatorid == popItem.value.operatorid) {
+            return popItem.value;
+        }
+        return x;
+    });
+    // }
+
     show.value = false;
 }
 
@@ -88,8 +101,10 @@ const handleDelete = (item) => {
     showConfirmDialog({
         title: '提示',
         message: '确认删除该操作员吗？',
-    }).then(() => {
-        // on confirm
+    }).then(async () => {
+        // on confirm 提交修改
+        await deleteOperator(item.operatorid);
+        list.value = list.value.filter((x) => x.operatorid != item.operatorid);
         console.log('confirm');
     }).catch(() => {
         // on cancel

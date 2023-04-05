@@ -3,7 +3,7 @@
         <NavBar title="访客记录检索" left-text="返回" left-arrow @click-left="onClickLeft" />
     </div>
     <div class="search-input">
-        <van-field class="left-icon" v-model="state.input" label="检索" left-icon="smile-o" placeholder="输入访客名称">
+        <van-field class="left-icon" v-model="state.name" label="检索" left-icon="smile-o" placeholder="输入访客名称">
             <template #button>
                 <van-button icon="search" size="small" type="primary" :loading="state.loading"
                     @click="onSearch">搜索</van-button>
@@ -20,7 +20,7 @@
             <Divider />
         </div>
         <div class="date-picker">
-            <van-field v-model="state.currentDateInput" label="日期" readonly @click="state.showPicker = true"
+            <van-field v-model="state.visittime" label="日期" readonly @click="state.showPicker = true"
                 left-icon="calendar-o" />
             <van-popup v-model:show="state.showPicker" round position="bottom">
                 <DatePicker v-model="currentDate" title="选择日期" @confirm="onConfirm" @cancel="state.showPicker = false" />
@@ -29,41 +29,51 @@
     </div>
     <div class="search-list">
         <ul>
-            <li v-for="(item, index) in list">
-                <div class="list-content">
-                    <div class="line-one">
-                        <p>来访人:{{ item.name }}</p>
-                        <p>体温: {{ item.temperature }}</p>
+            <Collapse v-model="activeNames">
+                <li v-for="(item, index) in list">
+                    <div class="list-content">
+                        <div class="line-one">
+                            <p>来访人:{{ item.name }}</p>
+                            <p>体温: {{ item.temperature }}</p>
+                            <p>是否来自疫区: {{ item.isepidemicarea ? '是' : '否' }}</p>
+                        </div>
+                        <div class="line-two">
+                            <p>来访时间：{{ item.visittime }}</p>
+                        </div>
+                    </div>
+                    <CollapseItem class="more" title="查看详情" :name="index">
+                        <p>单位名称:{{ item.companyname }}</p>
+                        <p>来访入口: {{ item.enter }}</p>
                         <p>身份证号码：{{ item.idcard }}</p>
-                    </div>
-                    <div class="line-two">
-                        <p>来访时间：{{ item.visittime }}</p>
-                    </div>
-                </div>
-                <Divider class="list-divider" />
-            </li>
+                        <p>车牌号：{{ item.vehicleid }}</p>
+                    </CollapseItem>
+                    <Divider class="list-divider" />
+                </li>
+            </Collapse>
         </ul>
     </div>
 </template>
 
 <script setup>
-import { NavBar, Icon, Divider, showFailToast, showSuccessToast, DatePicker } from 'vant';
+import { NavBar, Icon, Divider, showFailToast, showSuccessToast, DatePicker, Collapse, CollapseItem } from 'vant';
 import { reactive, ref } from 'vue';
 import { getVisitorByName } from '../request/visitor'
 
 const state = reactive({
     loading: false,
-    input: '',
+    name: '',
     enter: '',
     showPicker: false,
-    currentDateInput: ''
+    visittime: ''
 })
+
+const activeNames = ref(['1']);
 
 const list = ref([])
 
 const date = new Date();
 // const currentDate = ref([date.getFullYear.toString, date.getMonth.toString, date.getDay.toString]);
-const currentDate = ref(['2021', '01', '01']);
+const currentDate = ref(['2023', '04', '02']);
 
 const enters = ref(['A', 'B', 'C', 'D'])
 
@@ -73,7 +83,7 @@ const onClickLeft = () => history.back();
 const onSearch = async () => {
     console.log(state.input)
     state.loading = true
-    const result = await getVisitorByName(state.input)
+    const result = await getVisitorByName(state)
     console.log(result);
     if (result.success) {
         list.value = result.data
@@ -89,7 +99,7 @@ const onSearch = async () => {
 //日期选择
 const onConfirm = ({ selectedOptions }) => {
     state.showPicker = false;
-    state.currentDateInput = selectedOptions[0].text + "-" + selectedOptions[1].text + "-" + selectedOptions[2].text;
+    state.visittime = selectedOptions[0].text + "-" + selectedOptions[1].text + "-" + selectedOptions[2].text;
 };
 </script>
 
@@ -119,6 +129,10 @@ const onConfirm = ({ selectedOptions }) => {
 .search-list {
     font-size: 14px;
     color: #908c8c;
+
+    .more {
+        background-color: #a6a1a1;
+    }
 
     .list-content {
         // .line-one {}

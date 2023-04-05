@@ -70,7 +70,7 @@ import {
 } from 'echarts/components';
 import VChart from 'vue-echarts';
 import { ref, reactive, onMounted } from 'vue';
-import { addVisitor } from '../request/visitor';
+import { addVisitor, todayVisitor } from '../request/visitor';
 import { getBlacklist } from '../request/blacklist';
 
 const total = ref(0);
@@ -87,15 +87,12 @@ const form = reactive({
 });
 
 // 初始化获取数据
-onMounted(() => {
+onMounted(async () => {
     // 获取数据
-    // axios.get('/api/visitor/total').then(res => {
-    //     total.value = res.data;
-    // })
-    // axios.get('/api/visitor/flow').then(res => {
-    //     option.value.xAxis.data = res.data.time;
-    //     option.value.series[0].data = res.data.flow;
-    // })
+    const todayCount = await todayVisitor()
+    total.value = todayCount.data;
+    console.log(total.value);
+
     console.log('mounted');
 })
 
@@ -128,7 +125,7 @@ const onSubmit = async () => {
             if (result.success) {
                 //查看是否是黑名单中的人
                 const result = await getBlacklist(form.idcard);
-                if (result.data) {
+                if (result.data.filter(item => item.idcar == form.idcard).length > 0) {
                     showFailToast({
                         message: '黑名单中的人员',
                         duration: 2000,
@@ -147,6 +144,7 @@ const onSubmit = async () => {
                     duration: 2000,
                     forbidClick: true,
                 });
+                return
             }
             show.value = false;
         }

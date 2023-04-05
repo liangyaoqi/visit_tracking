@@ -17,16 +17,46 @@
 </template>
 
 <script lang="ts" setup>
-import { Field, Form, Button, CellGroup, NavBar, Dialog, showDialog, showToast } from 'vant';
+import { Field, showConfirmDialog, Form, Button, CellGroup, NavBar, Dialog, showDialog, showToast } from 'vant';
 import { reactive } from 'vue'
+import { addAnnounce } from '../request/announce';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 const form = reactive({
     content: ""
 });
 
 const onClickLeft = () => history.back();
+const store = useStore();
 
-const onSubmit = () => {
+
+const onSubmit = async () => {
+    showConfirmDialog({
+        title: '提示',
+        message: '确认发布公告？',
+    }).then(async () => {
+        console.log(store.state.user.operatorid);
+
+        const result = await addAnnounce({
+            content: form.content,
+            opratorid: store.state.user.operatorid
+        });
+        if (result.success) {
+            showToast({
+                message: '发布成功',
+                duration: 1000,
+            });
+        } else {
+            showToast({
+                message: '发布失败',
+                duration: 1000,
+            });
+        }
+    }).catch(() => {
+        // on cancel
+        console.log('cancel');
+    });
 
 }
 </script>

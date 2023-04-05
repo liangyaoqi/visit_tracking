@@ -1,6 +1,9 @@
 import request from "../utils/axios";
 
-const getBlacklist = (idcar) =>
-  request.get("/api/blacklist/findByName", { params: { idcar } });
+const getBlacklist = () => request.get("/api/blacklist");
 
-export { getBlacklist };
+const addBlacklist = (data) => request.post("/api/blacklist/add", data);
+
+const deleteBlacklist = (id) => request.delete(`/api/blacklist/delete/${id}`);
+
+export { getBlacklist, addBlacklist, deleteBlacklist };
