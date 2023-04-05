@@ -3,7 +3,7 @@
         <NavBar title="访客登记" left-text="返回" left-arrow @click-left="onClickLeft" />
 
         <div class="notice-bar">
-            <NoticeBar left-icon="volume-o" text="无论我们能活多久，我们能够享受的只有无法分割的此刻，此外别无其他。" />
+            <NoticeBar left-icon="volume-o" :text="notice" />
         </div>
         <div class="chart-box">
             <v-chart class="chart" :option="option" autoresize />
@@ -70,7 +70,8 @@ import {
 } from 'echarts/components';
 import VChart from 'vue-echarts';
 import { ref, reactive, onMounted } from 'vue';
-import { addVisitor, todayVisitor } from '../request/visitor';
+import { getAnnounce } from '../request/announce'
+import { addVisitor, todayVisitor, getEcharsData } from '../request/visitor';
 import { getBlacklist } from '../request/blacklist';
 
 const total = ref(0);
@@ -85,13 +86,25 @@ const form = reactive({
     isepidemicarea: false,
     enter: "A"
 });
+const notice = ref('')
 
 // 初始化获取数据
 onMounted(async () => {
-    // 获取数据
+    // 获取数据总人数
     const todayCount = await todayVisitor()
     total.value = todayCount.data;
     console.log(total.value);
+
+    //获取公告
+    const result = await getAnnounce();
+    if (result.success) {
+        notice.value = result.data.content
+    }
+
+    // 获取echarts数据
+    const echarsData = await getEcharsData();
+    console.log(echarsData);
+    option.value.series[0].data = echarsData
 
     console.log('mounted');
 })
@@ -180,7 +193,7 @@ const option = ref({
     series: [{
         name: '人流量',
         type: 'line',
-        data: [50, 60, 70, 80, 90, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750]
+        data: []
     }]
 });
 

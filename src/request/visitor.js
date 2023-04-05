@@ -8,4 +8,6 @@ const addVisitor = (data) => request.post("/api/visitor/add", data);
 
 const todayVisitor = () => request.get("/api/visitor/total");
 
-export { getVisitorByName, addVisitor, todayVisitor };
+const getEcharsData = () => request.get("/api/visitor/echars");
+
+export { getVisitorByName, addVisitor, todayVisitor, getEcharsData };
