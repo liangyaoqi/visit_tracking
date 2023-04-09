@@ -47,6 +47,9 @@
                         <van-button round block type="primary" native-type="submit">
                             提交
                         </van-button>
+                        <van-button round block type="primary" class="auto-input" @click="onAutoInput">
+                            自动录入
+                        </van-button>
                         <van-button round block type="default" class="cancel-btn" @click="show = false">
                             取消
                         </van-button>
@@ -200,6 +203,50 @@ const option = ref({
 
 const onClickLeft = () => history.back();
 
+const onAutoInput = () => {
+    form.name = getUserName();
+    form.idcard = generateIdCard();
+    form.temperature = "36.5";
+    form.vehicleid = "粤A12345";
+    form.companyname = "深圳市腾讯计算机系统有限公司";
+    form.reason = "上班";
+    form.isepidemicarea = false;
+    form.enter = "A";
+}
+
+function generateIdCard() {
+    const addressCode = ["11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", "44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", "64", "65", "71", "81", "82", "91"];
+    const weightFactors = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+    const checkCode = ["1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"];
+    const addressCodeIndex = Math.floor(Math.random() * addressCode.length);
+    const address = addressCode[addressCodeIndex];
+    const birthday = new Date(Math.floor(Math.random() * (new Date().getTime() - new Date("1900-01-01").getTime())) + new Date("1900-01-01").getTime());
+    const year = birthday.getFullYear().toString().substring(2);
+    const month = (birthday.getMonth() + 1).toString().padStart(2, "0");
+    const day = birthday.getDate().toString().padStart(2, "0");
+    let randomCode = "";
+    for (let i = 0; i < 3; i++) {
+        randomCode += Math.floor(Math.random() * 10);
+    }
+    let idCard = `${address}${year}${month}${day}${randomCode}`;
+    let sum = 0;
+    for (let i = 0; i < idCard.length; i++) {
+        sum += parseInt(idCard[i]) * weightFactors[i];
+    }
+    let checkCodeIndex = sum % 11;
+    idCard += checkCode[checkCodeIndex];
+    return idCard;
+}
+
+function getUserName() {
+    //百家姓 
+    var familyNames = new Array("赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许", "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏", "陶", "姜", "戚", "谢", "邹", "喻", "柏", "水", "窦", "章", "云", "苏", "潘", "葛", "奚", "范", "彭", "郎", "鲁", "韦", "昌", "马", "苗", "凤", "花", "方", "俞", "任", "袁", "柳", "酆", "鲍", "史", "唐", "费", "廉", "岑", "薛", "雷", "贺", "倪", "汤", "滕", "殷", "罗", "毕", "郝", "邬", "安", "常", "乐", "于", "时", "傅", "皮", "卞", "齐", "康", "伍", "余", "元", "卜", "顾", "孟", "平", "黄", "和", "穆", "萧", "尹");
+    //名称 
+    var givenNames = new Array("星辰", "美丽", "翔", "淑华", "晶莹", "云浩", "正气", "雨涵", "嘉怡", "佳毅", "皓月", "佳琪", "紫轩", "瑞辰", "昕蕊", "萌", "明远", "欣宜", "泽远", "欣怡", "子璇", "淼", "国栋", "夫子", "悦心", "甜", "敏", "尚", "国贤", "贺祥", "越峰", "昊轩", "启悦", "皓然", "建国", "益冉", "瑾春", "月仙", "雅芬", "章章", "文昊", "大东", "雄霖", "浩晨", "熙涵", "切瑞", "枫叶", "欣欣", "宜豪", "欣慧", "建业", "建林", "亦菲", "皓轩", "冰洁", "佳欣", "涵涵", "月辰", "淳美", "恩铭", "伟洋", "清妍", "诗悦", "嘉乐", "晨涵", "天赫", "玥傲", "佳昊", "天昊", "萌萌", "若萌", "佳怡", "欧莱", "晨茜", "晨璐", "运昊", "梦欣", "淑君", "晶滢", "润莎", "榕汕", "乐毅", "佳玉", "晓庆", "一鸣", "语晨", "添池", "田心", "雨泽", "雅晗", "雅涵", "美欣", "树佳", "文轩", "檀丽", "欣源", "梦雅", "榕润", "欣汝", "慧嘉", "建新",);
+    var i = parseInt(10 * Math.random()) * 10 + parseInt(10 * Math.random());
+    var j = parseInt(10 * Math.random()) * 10 + parseInt(10 * Math.random());
+    return familyNames[i] + givenNames[j];
+}
 
 </script>
 
@@ -270,6 +317,10 @@ const onClickLeft = () => history.back();
 
 
         .cancel-btn {
+            margin-top: 10px;
+        }
+
+        .auto-input {
             margin-top: 10px;
         }
     }
