@@ -4,13 +4,13 @@
 
         <!-- 列表 -->
         <ul class="admin-list">
-            <li>
+            <li class="list-item">
                 <router-link to="/manage">
                     <more-app class="operator-icon" theme="outline" size="80" fill="#333" />
                     <p class="front"> 管理操作员</p>
                 </router-link>
             </li>
-            <li>
+            <li class="list-item">
                 <router-link to="/announced">
                     <Announcement theme="outline" size="80" fill="#333" />
                     <p class="front"> 发布公告</p>
@@ -19,7 +19,14 @@
             <li class="list-item">
                 <router-link to="/blacklist">
                     <forbid theme="outline" size="100" fill="#333" />
-                    <p class="front"> 黑名单</p>
+                    <p class="front"> 查看黑名单</p>
+                </router-link>
+
+            </li>
+            <li class="list-item">
+                <router-link to="/blacklist">
+                    <transform theme="outline" size="100" fill="#333" />
+                    <p class="front"> 单位管理</p>
                 </router-link>
 
             </li>
@@ -29,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { MoreApp, Announcement ,Forbid} from '@icon-park/vue-next';
+import { MoreApp, Announcement, Forbid, Transform } from '@icon-park/vue-next';
 import { NavBar } from 'vant';
 
 const onClickLeft = () => history.back();
@@ -42,8 +49,22 @@ const onClickLeft = () => history.back();
         justify-content: center;
         align-items: center;
         flex-direction: row;
+        flex-wrap: wrap;
         height: 100vh;
         justify-content: space-around;
+
+        .list-item {
+            width: 38vw;
+            height: 30vh;
+            // margin: 20px;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 0 10px #ccc;
+        }
 
         .operator-icon {
             margin-left: 8px;

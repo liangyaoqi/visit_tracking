@@ -12,18 +12,31 @@
             </li>
             <li class="list-item">
                 <router-link to="/search">
-                    <people-search-one theme="outline" size="100" fill="#333" />
+                    <message-search theme="outline" size="100" fill="#333" />
                     <p class="front"> 来访检索</p>
                 </router-link>
 
             </li>
-           
+            <li class="list-item">
+                <router-link to="/blacklist">
+                    <forbid theme="outline" size="100" fill="#333" />
+                    <p class="front"> 黑名单</p>
+                </router-link>
+
+            </li>
+            <li class="list-item">
+                <router-link to="/blacklist">
+                    <personal-privacy theme="outline" size="100" fill="#333" />
+                    <p class="front"> 我的信息</p>
+                </router-link>
+
+            </li>
         </ul>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { Inspection, PeopleSearchOne,   } from '@icon-park/vue-next';
+import { Inspection, MessageSearch, PersonalPrivacy, Forbid } from '@icon-park/vue-next';
 import { NavBar } from 'vant';
 
 const onClickLeft = () => history.back();

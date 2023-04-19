@@ -8,7 +8,6 @@
         <Form :model="form" :rules="rules">
             <Field v-model="form.username" label="用户名" placeholder="请输入用户名" clearable required autofocus />
             <Field v-model="form.password" label="密码" type="password" placeholder="请输入密码" clearable required />
-            <RouterLink to="/registry" class="register-link">没有账号？点我去注册</RouterLink>
             <div class="login-btn">
                 <Button type="primary" block :loading="isSubmitting" @click="handleSubmit">登录</Button>
             </div>
