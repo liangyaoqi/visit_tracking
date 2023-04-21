@@ -25,7 +25,7 @@
 
             </li>
             <li class="list-item">
-                <router-link to="/blacklist">
+                <router-link to="/personal">
                     <personal-privacy theme="outline" size="100" fill="#333" />
                     <p class="front"> 我的信息</p>
                 </router-link>

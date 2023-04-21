@@ -10,7 +10,6 @@ import Login from "../components/Login.vue";
 import Registry from "../components/Registry.vue";
 import ManageOperator from "../views/ManageOperator.vue";
 import AnnouncedView from "../views/AnnouncedView.vue";
-import BlackList from "../views/Blacklist.vue";
 import store from "../vuex";
 import { computed } from "vue";
 import { showToast } from "vant";
@@ -65,6 +64,14 @@ const routes = [
   {
     path: "/search",
     component: () => import("../views/VisitorSearch.vue"),
+  },
+  {
+    path: "/personal",
+    component: () => import("../views/PersonalView.vue"),
+  },
+  {
+    path: "/dept",
+    component: () => import("../views/DeptManage.vue"),
   },
 ];
 

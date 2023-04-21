@@ -13,3 +13,6 @@ export const deleteOperator = (id) =>
 
 export const updateOperator = (data) =>
   request.post("/api/operator/update", data);
+
+export const getOperatorById = (id) =>
+  request.get(`/api/operator/getOperatorById/${id}`);

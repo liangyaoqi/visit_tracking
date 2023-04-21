@@ -24,7 +24,7 @@
 
             </li>
             <li class="list-item">
-                <router-link to="/blacklist">
+                <router-link to="/dept">
                     <transform theme="outline" size="100" fill="#333" />
                     <p class="front"> 单位管理</p>
                 </router-link>
