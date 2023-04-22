@@ -50,7 +50,7 @@ const onClickLeft = () => history.back();
         align-items: center;
         flex-direction: row;
         flex-wrap: wrap;
-        height: 100vh;
+        height: 80vh;
         justify-content: space-around;
 
         .list-item {

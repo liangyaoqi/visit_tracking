@@ -96,9 +96,11 @@ const handleAdd = () => {
 <style lang="scss" scoped>
 .dept-manage {
     .list {
+        padding: 10px;
+
         .list-content {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
         }
     }
 

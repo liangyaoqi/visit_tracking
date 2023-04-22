@@ -103,6 +103,8 @@ const handleAdd = () => {
 
 <style lang="scss" scoped>
 .blacklist {
+    padding: 10px;
+
     .add-overlay {
         margin-top: 200px;
     }

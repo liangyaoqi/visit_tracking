@@ -8,7 +8,6 @@
                     <div class="list-content">
                         <div class="left">
                             <p>姓名:{{ item.name }}</p>
-                            <p>是否为管理员：{{ item.isadmin == 1 ? "是" : "否" }}</p>
                             <p>手机号码：{{ item?.phonenumber }}</p>
                         </div>
                         <div class="right">
@@ -33,6 +32,7 @@
                         <van-field v-model="popItem.operatorid" name="operatorid" style="display: none;" />
                         <van-field v-model="popItem.name" name="name" label="姓名" placeholder="姓名" />
                         <van-field v-model="popItem.email" type="text" name="email" label="邮箱" placeholder="邮箱" />
+                        <van-field v-model="popItem.deptId" type="text" name="deptId" label="部门id" placeholder="部门id" />
                         <van-field v-model="popItem.phonenumber" type="text" name="phonenumber" label="手机号码"
                             placeholder="手机号码" />
                         <van-field v-model="popItem.password" :type="showPassword ? 'password' : 'text'" name="password"
