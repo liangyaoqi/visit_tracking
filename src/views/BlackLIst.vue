@@ -26,6 +26,8 @@
                             :rules="[{ required: true, message: '请填写身份证号码' }]" />
                         <van-field v-model="form.reason" type="text" name="原因" label="原因" placeholder="原因"
                             :rules="[{ required: true, message: '请填写原因' }]" />
+                        <van-field v-model="form.name" type="text" name="name" label="姓名" placeholder="姓名"
+                            :rules="[{ required: true, message: '请填写原因' }]" />
                     </CellGroup>
                     <div style="margin: 16px;">
                         <van-button round block type="primary" native-type="submit">
@@ -97,6 +99,10 @@ const onSubmit = async () => {
 const onClickLeft = () => history.back();
 
 const handleAdd = () => {
+    if (user.isadmin !== "1") {
+        showToast('您没有权限添加');
+        return;
+    }
     show.value = true;
 };
 </script>

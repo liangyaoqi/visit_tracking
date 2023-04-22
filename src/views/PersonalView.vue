@@ -9,7 +9,7 @@
                 <Cell title="姓名" :value="user.name" />
                 <Cell title="邮箱" :value="user.email" />
                 <Cell title="手机号" :value="user.phonenumber" />
-                <Cell title="部门" value="内容" />
+                <Cell title="部门" :value="user.deptid" />
             </CellGroup>
         </div>
         <div class="edit-form" v-else="edit"><van-form @submit="onSubmit">
@@ -42,7 +42,7 @@ import { NavBar, Cell, CellGroup, Button, showToast } from "vant";
 import { User } from '@icon-park/vue-next';
 import { updateOperator } from "../request/operator";
 
-const edit = ref(false);
+const edit = ref(true);
 const form = ref({
     deptid: null,
     email: null,
@@ -57,7 +57,7 @@ const form = ref({
 
 const store = useStore();
 
-const user = store.state.user;
+const user = ref(store.state.user);
 
 const onClickLeft = () => history.back();
 
@@ -70,12 +70,14 @@ const onCancel = () => {
 }
 
 const onSubmit = async () => {
-    console.log(form.value);
     const result = await updateOperator(form.value);
-    console.log(result);
     if (result.success) {
         showToast('修改成功')
-        store.commit('saveUser')
+        store.commit('updateUser', user.value.operatorid)
+        setTimeout(() => {
+            user.value = store.state.user;
+        }, 500)
+        console.log(store.state.user)
     } else {
         showToast('修改失败')
     }
