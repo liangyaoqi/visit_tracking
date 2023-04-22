@@ -6,6 +6,7 @@
                 <li v-for="(item, index) in list">
                     <div class="list-content">
                         <div class="left">
+                            <p>姓名:{{ item.name }}</p>
                             <p>身份证号:{{ item.idcar }}</p>
                             <p>原因：{{ item?.reason }}</p>
                         </div>
@@ -44,13 +45,18 @@
 </template>
 
 <script setup>
-import { NavBar, Divider, showConfirmDialog, CellGroup } from 'vant';
+import { NavBar, Divider, showConfirmDialog, CellGroup, showToast } from 'vant';
 import { onMounted, ref } from 'vue';
 import { getBlacklist, addBlacklist, deleteBlacklist } from '../request/blacklist';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const user = store.state.user;
 
 const form = ref({
     reason: '',
     idcar: '',
+    name: ''
 })
 const show = ref(false)
 const list = ref([]);
@@ -61,6 +67,10 @@ const handleDelete = (item) => {
         message: '确认删除该操作员吗？',
     }).then(async () => {
         // on confirm
+        if (user.isadmin !== "1") {
+            showToast('您没有权限删除');
+            return;
+        }
         const result = await deleteBlacklist(item.idcar);
         console.log(result);
         list.value = list.value.filter((x) => x.idcar !== item.idcar);
@@ -72,6 +82,7 @@ const handleDelete = (item) => {
 
 onMounted(async () => {
     const result = await getBlacklist();
+    console.log(result);
     list.value = result.data
 });
 
@@ -122,4 +133,4 @@ const handleAdd = () => {
 .van-form {
     margin-top: 200px;
 }
-</style>
+</style> 

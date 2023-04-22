@@ -26,8 +26,11 @@
                             :rules="[{ required: true, message: '请填写体温' }]" />
                         <van-field v-model="form.vehicleid" type="text" name="车牌号" label="车牌号" placeholder="车牌号"
                             :rules="[{ required: false, message: '请填写车牌号' }]" />
-                        <van-field v-model="form.companyname" type="text" name="访客单位" label="访客单位" placeholder="访客单位"
-                            :rules="[{ required: true, message: '请填写访客单位' }]" />
+                        <van-field v-model="form.companyname" is-link readonly name="picker" label="来访单位"
+                            placeholder="点击来访单位" @click="showPicker = true" />
+                        <van-popup v-model:show="showPicker" position="bottom">
+                            <van-picker :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
+                        </van-popup>
                         <van-field v-model="form.reason" type="text" name="来访事由" label="来访事由" placeholder="来访事由"
                             :rules="[{ required: true, message: '请填写来访事由' }]" />
                         <Checkbox v-model="form.isepidemicarea" icon-size="20px" class="checkbox">是否来自疫区</Checkbox>
@@ -76,6 +79,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { getAnnounce } from '../request/announce'
 import { addVisitor, todayVisitor, getEcharsData } from '../request/visitor';
 import { getBlacklist } from '../request/blacklist';
+import { getDept } from '../request/dept';
 
 const total = ref(0);
 const show = ref(false);
@@ -109,7 +113,12 @@ onMounted(async () => {
     console.log(echarsData);
     option.value.series[0].data = echarsData
 
-    console.log('mounted');
+    // 获取部门数据
+    const dept = await getDept();
+    dept.data.forEach(item => {
+        columns.value.push({ text: item.deptName, value: item.deptName })
+    })
+    console.log(columns.value);
 })
 
 const enters = ref([
@@ -247,6 +256,14 @@ function getUserName() {
     var j = parseInt(10 * Math.random()) * 10 + parseInt(10 * Math.random());
     return familyNames[i] + givenNames[j];
 }
+const result = ref('');
+const showPicker = ref(false);
+const columns = ref([]);
+
+const onConfirm = ({ selectedOptions }) => {
+    form.companyname = selectedOptions[0]?.text;
+    showPicker.value = false;
+};
 
 </script>
 
